@@ -1,3 +1,4 @@
 dataset
 submission.csv
 __pycache__
+*.csv

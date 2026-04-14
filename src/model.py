@@ -89,20 +89,24 @@ class MyCNN(nn.Module):
         self.maxpool = nn.AdaptiveMaxPool2d(1)
         self.fc = nn.Sequential(
             nn.Dropout(0.3),
-            nn.Linear(512, 1)
+            nn.Linear(960, 1)
         )
 
     def forward(self, x):
         x = self.stem(x)
 
-        x = self.layer1(x)
-        x = self.layer2(x)
-        x = self.layer3(x)
-        x = self.layer4(x)
+        x1 = self.layer1(x)
+        x2 = self.layer2(x1)
+        x3 = self.layer3(x2)
+        x4 = self.layer4(x3)
 
-        avg = self.avgpool(x).view(x.size(0), -1)
-        mx = self.maxpool(x).view(x.size(0), -1)
-        x = torch.cat([avg, mx], dim=1)
+        feats = []
+        for xi in [x1, x2, x3, x4]:
+            avg = self.avgpool(xi).view(xi.size(0), -1)
+            mx = self.maxpool(xi).view(xi.size(0), -1)
+            feats.append(avg)
+            feats.append(mx)
 
+        x = torch.cat(feats, dim=1)
         x = self.fc(x)
         return x

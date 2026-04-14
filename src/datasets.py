@@ -49,16 +49,20 @@ class FaceTestDataset(Dataset):
         return image, image_id
     
 train_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    transforms.RandomHorizontalFlip(p=0.5),
-    transforms.RandomAffine(degrees=10, translate=(0.1, 0.1), scale=(0.9, 1.1)),
+    transforms.Resize((160, 160)),
+    transforms.ColorJitter(
+        brightness=0.05,
+        contrast=0.05,
+        saturation=0.03,
+        hue=0.01
+    ),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5],
                          std=[0.5, 0.5, 0.5]),
 ])
 
 val_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((160, 160)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.5, 0.5, 0.5],
                          std=[0.5, 0.5, 0.5]),
